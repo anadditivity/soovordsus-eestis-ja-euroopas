@@ -91,3 +91,49 @@ ggplot(andmed_pikk_ilma_suurteta, aes(x = lyhend, y = Skoor)) +
              size = 3, color = '#0072CE') +
   labs(y = 'Soolise võrdõiguslikkuse indeks (SVI)', x = 'Valdkonnad', title = 'Eesti võrrelduna teiste riikidega') +
   theme_minimal() + coord_flip()
+
+
+soome_ja_eesti <- andmed_pikk_ilma_suurteta[andmed_pikk_ilma_suurteta$Riik %in% c('Estonia', 'Finland'),]
+
+
+# ggplot(soome_ja_eesti, aes(x = lyhend, y = Skoor)) +
+#   geom_boxplot() +
+#   geom_point(data = filter(soome_ja_eesti, soome_ja_eesti$Riik == "Estonia"), 
+#              aes(x = lyhend, y = Skoor), 
+#              size = 3, color = '#0072CE') +
+#   geom_point(data = filter(soome_ja_eesti, soome_ja_eesti$Riik == "Finland"), 
+#              aes(x = lyhend, y = Skoor), 
+#              size = 3, color = '#FFD700') +
+#   labs(y = 'Soolise võrdõiguslikkuse indeks (SVI)', x = 'Valdkonnad', title = 'Eesti ja Soome võrdlus') +
+#   theme_minimal() + coord_flip()
+
+
+soome_ja_eesti$Riik <- recode(soome_ja_eesti$Riik,
+                              "Estonia" = "Eesti",
+                              "Finland" = "Soome")
+
+ggplot(soome_ja_eesti, aes(x = lyhend, y = Skoor, fill = Riik)) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  labs(y = 'Soolise võrdõiguslikkuse indeks (SVI)', x = 'Valdkonnad', fill = 'Riik') +
+  scale_fill_manual(
+    values = c("Eesti" = "#0072CE", "Soome" = "#F2B800"),
+    labels = c("Eesti", "Soome")
+  )
+
+####sama asi rootsiga
+
+rootsi_ja_eesti <- andmed_pikk_ilma_suurteta[andmed_pikk_ilma_suurteta$Riik %in% c('Estonia', 'Sweden'),]
+rootsi_ja_eesti$Riik <- recode(rootsi_ja_eesti$Riik,
+                              "Estonia" = "Eesti",
+                              "Sweden" = "Rootsi")
+
+ggplot(rootsi_ja_eesti, aes(x = lyhend, y = Skoor, fill = Riik)) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  labs(y = 'Soolise võrdõiguslikkuse indeks (SVI)', x = 'Valdkonnad', fill = 'Riik') +
+  scale_fill_manual(
+    values = c("Eesti" = "#0072CE", "Rootsi" = "#F2B800"),
+    labels = c("Eesti", "Rootsi")
+  )
+
