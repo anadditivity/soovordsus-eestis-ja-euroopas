@@ -19,15 +19,15 @@ ggplot(andmed_kokku, aes(x = reorder(Geographic.region.Individual.indicators.use
   geom_col(position = "dodge") +
   coord_flip() +
   scale_fill_grey(start = 0.3, end = 0.7) +
-  labs(y = 'Juhatuste liikmete osakaal (%)', x = 'Riik ja EL keskmine', fill = "Sugu") +
+  labs(y = 'Juhatuste liikmete osakaal (%)', x = 'Riik ja EL keskmine', fill = 'Sugu') +
   theme_bw()
 
 
 andmed_pikk <- andmed_koik %>%
   pivot_longer(
     cols = 2:ncol(andmed_koik),
-    names_to = "Indeks",
-    values_to = "Skoor"
+    names_to = 'Indeks',
+    values_to = 'Skoor'
   )
 
 colnames(andmed_pikk)[1] <- 'Riik'
@@ -35,58 +35,59 @@ colnames(andmed_pikk)[1] <- 'Riik'
 andmed_pikk <- andmed_pikk %>%
   mutate(lyhend = case_when(
     Indeks == 'Overall.Gender.Equality.Index' ~ 'Soolise võrdõiguslikkuse indeks',
-    Indeks == 'Work..Domain.score.' ~ 'Töö valdkond',
+    Indeks == 'Work..Domain.score.' ~ 'Töö',
     Indeks == 'Participation.in.work..Subdomain.score.' ~ 'Tööhõive',
     Indeks == 'Segregation.and.quality.of.work..Subdomain.score.' ~ 'Töösegregatsioon ja kvaliteet',
-    Indeks == 'Money..Domain.score.' ~ 'Raha valdkond',
+    Indeks == 'Money..Domain.score.' ~ 'Raha',
     Indeks == 'Financial.resources..Subdomain.score.' ~ 'Majanduslikud varad',
     Indeks == 'Economic.situation..Subdomain.score.' ~ 'Majanduslik olukord',
-    Indeks == 'Knowledge..Domain.score.' ~ 'Teadmiste valdkond',
+    Indeks == 'Knowledge..Domain.score.' ~ 'Teadmised',
     Indeks == 'Attainment.and.participation..Subdomain.score.' ~ 'Hariduses osalemine ja saavutused',
     Indeks == 'Segregation..Subdomain.score.' ~ 'Hariduse segregatsioon',
-    Indeks == 'Time..Domain.score.' ~ 'Aja kasutus',
-    Indeks == 'Care.activities..Subdomain.score.' ~ 'Hooldustegevused',
+    Indeks == 'Time..Domain.score.' ~ 'Aeg',
+    Indeks == 'Care.activities..Subdomain.score.' ~ 'Hoolekanne',
     Indeks == 'Social.activities..Subdomain.score.' ~ 'Sotsiaalne tegevus',
-    Indeks == 'Power..Domain.score.' ~ 'Võimu valdkond',
+    Indeks == 'Power..Domain.score.' ~ 'Võim',
     Indeks == 'Political.power..Subdomain.score.' ~ 'Poliitiline võim',
     Indeks == 'Economic.power..Subdomain.score.' ~ 'Majanduslik võim',
     Indeks == 'Social.power..Subdomain.score.' ~ 'Sotsiaalne võim',
-    Indeks == 'Health..Domain.score.' ~ 'Tervise valdkond',
+    Indeks == 'Health..Domain.score.' ~ 'Tervis',
     Indeks == 'Health.status..Subdomain.score.' ~ 'Tervise seisund',
-    Indeks == 'Healthy.behaviour..Subdomain.score.' ~ 'Tervislik käitumine',
-    Indeks == 'Access.to.health.structures..Subdomain.score.' ~ 'Juurdepääs terviseteenustele',
+    Indeks == 'Healthy.behaviour..Subdomain.score.' ~ 'Tervislik eluviis',
+    Indeks == 'Access.to.health.structures..Subdomain.score.' ~ 'Tervishoiu kättesaadavus',
     TRUE ~ 'Muu'
   )) %>%
   mutate(lyhend = factor(lyhend, levels = c(
     'Soolise võrdõiguslikkuse indeks',
-    'Töö valdkond',
+    'Töö',
     'Tööhõive',
     'Töösegregatsioon ja kvaliteet',
-    'Raha valdkond',
+    'Raha',
     'Majanduslikud varad',
     'Majanduslik olukord',
-    'Teadmiste valdkond',
+    'Teadmised',
     'Hariduses osalemine ja saavutused',
     'Hariduse segregatsioon',
-    'Aja kasutus',
-    'Hooldustegevused',
+    'Aeg',
+    'Hoolekanne',
     'Sotsiaalne tegevus',
-    'Võimu valdkond',
+    'Võim',
     'Poliitiline võim',
     'Majanduslik võim',
     'Sotsiaalne võim',
-    'Tervise valdkond',
+    'Tervis',
     'Tervise seisund',
-    'Tervislik käitumine',
-    'Juurdepääs terviseteenustele',
+    'Tervislik eluviis',
+    'Tervishoiu kättesaadavus',
     'Muu'
   )))
 
+andmed_pikk_ilma_suurteta <- andmed_pikk[!(andmed_pikk$lyhend %in% c('Töö', 'Võim', 'Tervis', 'Muu', 'Aeg','Raha', 'Teadmised','Soolise võrdõiguslikkuse indeks')),]
 
-ggplot(andmed_pikk, aes(x = lyhend, y = Skoor)) +
+ggplot(andmed_pikk_ilma_suurteta, aes(x = lyhend, y = Skoor)) +
   geom_boxplot() +
-  geom_point(data = filter(andmed_pikk, andmed_pikk$Riik == "Estonia"), 
+  geom_point(data = filter(andmed_pikk_ilma_suurteta, andmed_pikk_ilma_suurteta$Riik == "Estonia"), 
              aes(x = lyhend, y = Skoor), 
              size = 3, color = '#0072CE') +
-  labs(y = "Soolise võrdõiguslikkuse indeks", x = "Valdkond", title = "Eesti võrrelduna teiste riikidega") +
+  labs(y = 'Soolise võrdõiguslikkuse indeks (SVI)', x = 'Valdkonnad', title = 'Eesti võrrelduna teiste riikidega') +
   theme_minimal() + coord_flip()
