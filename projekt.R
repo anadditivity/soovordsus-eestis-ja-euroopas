@@ -212,9 +212,7 @@ ggplot(eesti_valdkonniti_pikk, aes(x = Aasta, y = Indeks, color = Valdkond, grou
 
 
 ###palgalõhed
-palgalõhe_eurostat <- read.csv('andmestik/eurostat-palgalohe.csv', encoding = 'UTF-8', sep =',')
-palgalõhe_statamet <- read.csv('andmestik/statamet-palgalohe.csv', encoding = 'UTF-8', sep =',')
-
+palgalohe_tabel <- read.csv('andmestik/palgalohe-tabel.csv', encoding = 'UTF-8', sep =',', check.names=FALSE)
 
 ### aneti kood
 
