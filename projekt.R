@@ -178,7 +178,7 @@ eesti_valdkonniti_suured <- eesti_valdkonniti_suured %>%
     Valdkond == 'Time' ~ 'Aeg',
     Valdkond == 'Power' ~ 'Võim',
     Valdkond == 'Health' ~ 'Tervis',
-    Valdkond == 'Index' ~ 'SVI'
+    Valdkond == 'Index' ~ 'Indeks'
   )) %>%
   mutate(Valdkond = factor(Valdkond, levels = c(
     'Töö',
@@ -213,6 +213,8 @@ ggplot(eesti_valdkonniti_pikk, aes(x = Aasta, y = Indeks, color = Valdkond, grou
 
 ###palgalõhed
 palgalohe_tabel <- read.csv('andmestik/palgalohe-tabel.csv', encoding = 'UTF-8', sep =',', check.names=FALSE)
+
+palgalohe_tabel
 
 ### aneti kood
 

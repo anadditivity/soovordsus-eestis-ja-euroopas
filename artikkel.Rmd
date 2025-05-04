@@ -1,78 +1,151 @@
 ---
-title: "Saagem ometi eurooplasteks! Statistiline vaade Eesti soovõrdsusindeksile"
+title: "Saagem ometi eurooplasteks! Statistiline vaade Eesti soolise võrdsuse indeksile"
 author: "Anet Ilustrumm, Marin-Brith Põldma, Adeline Talvik"
 output:
   html_document: default
   pdf_document: default
 ---
 
+```{r echo=FALSE, message=FALSE }
+# Töökeskkonna seadistamine
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(tidyr)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+options(scipen=1000)
+```
+
 # Vähemalt me pole viimased…?
 
-Aprilli lõpus jagas Euroopa Komisjon sotsiaalmeedias ([Bluesky](https://bsky.app/profile/ec.europa.eu/post/3lnrr7nykl22q), [Facebook](https://www.facebook.com/EuropeanCommission/posts/did-you-know-that-the-eu-has-made-its-best-progress-on-gender-equality-in-the-pa/1089735736524888/), [Instagram](https://www.instagram.com/p/DI8RJEPP6PD/)) Euroopa Liidu soolise võrdõiguslikkuse instituudi (EIGE) [2024\. aasta soolise võrdsuse indeksi tulemusi](https://eige.europa.eu/gender-equality-index/2024), reklaamides postituses oleval pildil, et Euroopa Liidu keskmine tulemus on vahemikus 2010 kuni 2024 7,9 protsendi võrra paranenud. Statistiliselt on tegu pisut eksitava reklaamlausega: 2024\. aasta andmete põhjal pole veel raportit koostatud, vaid tegelikkuses tugineb 2024\. aasta raport 2022\. aastal kogutud andmetele, samamoodi nagu 2010\. aastal kogutud andmete põhjal ilmus raport tegelikult aastal 2013\. Samuti on reklaampildil protsendi kasutamine omaette kurioosum – tegelikkuses on indeks paranenud 7,9 indeksipunkti võrra, mitte protsendi. See tähendab ligilähedaselt 12,5 protsendilist tõusu, mis võiks sõnumina oluliselt etemini kõlada, [umbes nagu Eesti kõrged PISA tulemused](https://hm.ee/sites/default/files/documents/2023-12/Kokkuv%C3%B5te.pdf). Kuid jätame selle marginaalse reklaamfopaa hetkel kõrvale.
+Aprilli lõpus jagas Euroopa Komisjon sotsiaalmeedias ([Bluesky](https://bsky.app/profile/ec.europa.eu/post/3lnrr7nykl22q), [Facebook](https://www.facebook.com/EuropeanCommission/posts/did-you-know-that-the-eu-has-made-its-best-progress-on-gender-equality-in-the-pa/1089735736524888/), [Instagram](https://www.instagram.com/p/DI8RJEPP6PD/)) Euroopa Liidu soolise võrdõiguslikkuse instituudi (EIGE) [2024. aasta soolise võrdsuse indeksi tulemusi](https://eige.europa.eu/gender-equality-index/2024), reklaamides postituses oleval pildil, et Euroopa Liidu keskmine tulemus on vahemikus 2010 kuni 2024 $7,9$ protsendi võrra paranenud. Statistiliselt on tegu pisut eksitava reklaamlausega: 2024. aasta andmete põhjal pole veel raportit koostatud, vaid tegelikkuses tugineb 2024. aasta raport 2022. aastal kogutud andmetele, samamoodi nagu 2010. aastal kogutud andmete põhjal ilmus raport tegelikult aastal 2013. Samuti on reklaampildil protsendi kasutamine omaette kurioosum – tegelikkuses on indeks paranenud $7,9$ indeksipunkti võrra, mitte protsendi. See tähendab ligilähedaselt $12,5$ protsendilist tõusu, mis võiks sõnumina oluliselt etemini kõlada, [umbes nagu Eesti kõrged PISA tulemused](https://hm.ee/sites/default/files/documents/2023-12/Kokkuv%C3%B5te.pdf). Kuid jätame selle marginaalse reklaamfopaa hetkel kõrvale.
 
-EL-i 27 liikmesriigi arvestuses saavutas Eesti skoori 60,8 ning maandus sellega edetabeli alumises pooles, täpsemalt 21\. kohal. Eestist madalamale jäid indeksi kahanemise järjekorras vaid Slovakkia, Tšehhi, Horvaatia, Kreeka, Ungari ja Rumeenia, mille indeksid jäid vahemikku 59,9–57,5. Euroopa Liidu keskmine skoor 2010\. aasta andmete põhjal oli 63,1 ning mullu kogutud andmete põhjal 71,0.
+Euroopa Liidu keskmist SVI-d $71,0$ ületasid 11 riiki. Kõrgeima tulemuse saavutas Rootsi $82,0$ punktiga. EL-i 27 liikmesriigi arvestuses sai Eesti skoori $60,8$ ning maandus sellega edetabeli alumises pooles, täpsemalt 21. kohal. Eestist madalamale jäid indeksi kahanemise järjekorras vaid Slovakkia, Tšehhi, Horvaatia, Kreeka, Ungari ja Rumeenia, mille indeksid jäid vahemikku $57,5–59,9$. Euroopa Liidu keskmine skoor 2010. aasta andmete põhjal oli $63,1$ ning mullu kogutud andmete põhjal $71,0$. 
 
-SISESTA GRAAFIK KÕIKIDE RIIKIDE SVI-ST
+```{r, fig.width=12, fig.height=8}
 
-Tulemus tekitab suisa furoori – oleme endiselt kaugel unistusest olla osa Põhjamaadest ja jätta Balti ajalugu selja taha. E-riigi algusaegadel saavutatud euroopastumistuhin näib nüüd vaid kollektiivse mälestusekübemena meie noore riigi ajaloos. Mis sai meie [rahvusliku dilemma](https://kultuur.err.ee/655300/sada-eesti-motet-gustav-suits) ületamisest? Kuidas on võimalik, et Eesti pole isegi jõudnud Euroopa Liidu 2010\. aasta keskmisele võrdõiguslikkuse tasemele? Miks ei ole eestlased suutnud heidutada nõukogudeaegseid vaateid naiste nõrkusest ning [veerand Eesti poistest arvavad, et naised ei sobi poliitikasse](https://novaator.err.ee/1609200433/uuring-veerand-poistest-peab-naiste-poliitikas-osalemist-sobimatuks)? Mis on meie kui lääneriigi peamised põrumiskohad soolise võrdõiguslikkuse teemal? Vastuseid üritatakse leida EIGE 2024\. aasta raporti arvutuskäiku ja tulemustesse süvitsi sukeldumisega. Artikli lõpus kirjeldatakse, kuidas võiks soolise võrdõiguslikkuse saavutamine mõjutada Eesti ühiskonda ja majandust.
+data <- read.csv('andmestik/2024-EIGE-data.csv', encoding = 'UTF-8', sep =';')
+
+data <- data %>%
+  mutate(Riik_EE = recode(Geographic.region..Sub...Domain.Scores,
+                          "Austria" = "Austria",
+                          "Belgium" = "Belgia",
+                          "Bulgaria" = "Bulgaaria",
+                          "Croatia" = "Horvaatia",
+                          "Cyprus" = "Küpros",
+                          "Czechia" = "Tšehhi",
+                          "Denmark" = "Taani",
+                          "Estonia" = "Eesti",
+                          "European Union - 27 countries (from 2020)" = "Euroopa Liit",
+                          "Finland" = "Soome",
+                          "France" = "Prantsusmaa",
+                          "Germany" = "Saksamaa",
+                          "Greece" = "Kreeka",
+                          "Hungary" = "Ungari",
+                          "Ireland" = "Iirimaa",
+                          "Italy" = "Itaalia",
+                          "Latvia" = "Läti",
+                          "Lithuania" = "Leedu",
+                          "Luxembourg" = "Luksemburg",
+                          "Malta" = "Malta",
+                          "Netherlands" = "Holland",
+                          "Poland" = "Poola",
+                          "Portugal" = "Portugal",
+                          "Romania" = "Rumeenia",
+                          "Slovakia" = "Slovakkia",
+                          "Slovenia" = "Sloveenia",
+                          "Spain" = "Hispaania",
+                          "Sweden" = "Rootsi"
+  ))
+
+data <- data %>%
+  mutate(Varvikood = case_when(
+    Riik_EE == "Eesti" ~ "EE",
+    Riik_EE == "Euroopa Liit" ~ "EU",
+    TRUE ~ "Muu"
+  ))
+
+ggplot(data, aes(x = reorder(Riik_EE, Overall.Gender.Equality.Index), y = Overall.Gender.Equality.Index, 
+                 fill = Varvikood)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = format(Overall.Gender.Equality.Index, big.mark=" ")), position = position_dodge(width = 0.9), hjust = -0.05)+
+  scale_fill_manual(values = c("EE" = "#0072CE", "EU" = "#F2B800", "Muu" = "lightblue"), guide = "none") +
+  labs(x = "",
+       y = "Soolise võrdsuse indeksi tulemus",
+       title = "2024. aasta EIGE raporti soolise võrdsuse indeks riikide kaupa",
+       subtitle = "2024. aasta raporti andmed pärinevad enamasti 2022. aastast",
+       caption = "Allikas: Euroopa Liidu soolise võrdõiguslikkuse instituut (EIGE), 2024."
+       ) +
+  coord_flip()
+  
+```
+
+
+Tulemus tekitab suisa furoori – oleme endiselt kaugel unistusest olla osa Põhjamaadest ja jätta Balti ajalugu selja taha. E-riigi algusaegadel saavutatud euroopastumistuhin näib nüüd vaid kollektiivse mälestusekübemena meie noore riigi ajaloos. Mis sai meie [rahvusliku dilemma](https://kultuur.err.ee/655300/sada-eesti-motet-gustav-suits) ületamisest? Kuidas on võimalik, et Eesti pole isegi jõudnud Euroopa Liidu 2010. aasta keskmisele võrdõiguslikkuse tasemele? Miks ei ole eestlased suutnud heidutada nõukogudeaegseid vaateid naiste nõrkusest ning [veerand Eesti poistest arvavad, et naised ei sobi poliitikasse](https://novaator.err.ee/1609200433/uuring-veerand-poistest-peab-naiste-poliitikas-osalemist-sobimatuks)? Mis on meie kui lääneriigi peamised põrumiskohad soolise võrdõiguslikkuse teemal? Vastuseid üritatakse leida EIGE 2024. aasta raporti arvutuskäiku ja tulemustesse süvitsi sukeldumisega. Artikli lõpus kirjeldatakse, kuidas võiks soolise võrdõiguslikkuse saavutamine mõjutada Eesti ühiskonda ja majandust.
 
 Artiklis vaadeldakse sugu binaarsena, kuna vaadeldavad andmed on kogutud binaarse soo eeldusega. Artikli autorite arvates pole sugu rangelt binaarne.
 
-# Kuidas mõõta ebavõrdsust võrdselt?
+# Kuidas ebavõrdsust võrdselt mõõta?
 
-Euroopa soolise võrdõiguslikkuse indeks (edaspidi SVI) on üldistav sünteetiline mõõde soolise võrdõiguslikkuse arvutamiseks Euroopa Liidu liikmesriikides. Indeksis kasutatakse 100-punktilist skaalat: 1 tähistab täielikku ebavõrdsust ja 100 täielikku võrdsust. SVI välja töötamisel testiti rohkem kui 3000 erinevat kombinatsiooni koefitsentidest ja agregeerimismeetoditest. Tulemusena valmis indeks, mis on EL-i liikmesriikide vahel võrreldav ning võimaldab soovõrdsuse arengut ka ajapikku kaardistada. SVI arvutamisel ei tekitata eeldust, et ainult üks sugu saab kannatada, vaid ebavõrdsust arvestatakse mõlemapoolselt – kui leidub indikaator, kus sugude vahel on suur erinevus, siis SVI muutub madalamaks. See aga tähendab, et kontekstita pole võimalik SVI põhjal öelda, millise soo suhtes diskrimineerimine aset leiab. SVI eesmärk pole mitte ainult üldise soovõrdsuse kvantitatiivne määratlemine, vaid ka valdkonnapõhine arvutamine ja EL-i liikmesriikides erinevate eelnõude mõju hindamine.
+Euroopa soolise võrdõiguslikkuse indeks (edaspidi **SVI**) on üldistav sünteetiline mõõde soolise võrdõiguslikkuse arvutamiseks Euroopa Liidu liikmesriikides. Indeksis kasutatakse sajapunktilist skaalat: $1$ tähistab täielikku ebavõrdsust ja $100$ täielikku võrdsust. SVI välja töötamisel testiti rohkem kui 3000 erinevat kombinatsiooni koefitsentidest ja agregeerimismeetoditest. Tulemusena valmis indeks, mis on EL-i liikmesriikide vahel võrreldav ning võimaldab soovõrdsuse arengut ka ajapikku kaardistada. SVI arvutamisel ei tekitata eeldust, et ainult üks sugu saab kannatada, vaid ebavõrdsust arvestatakse mõlemapoolselt – kui leidub indikaator, kus sugude vahel on suur erinevus, siis SVI muutub madalamaks. See aga tähendab, et kontekstita pole võimalik SVI põhjal öelda, millise soo suhtes diskrimineerimine aset leiab. SVI eesmärk pole mitte ainult üldise soovõrdsuse kvantitatiivne määratlemine, vaid ka valdkonnapõhine arvutamine ja EL-i liikmesriikides erinevate eelnõude mõju hindamine.
 
-Eelnevalt kirjeldatud SVI loomise taust ja algne metoodika on täismahus loetav [2013\. aasta SVI raportis](https://eige.europa.eu/sites/default/files/documents/Gender-Equality-Index-Report.pdf). Metoodikat [uuendati 2017\. aastal](https://eige.europa.eu/publications-resources/publications/gender-equality-index-2017-methodological-report) ning järgnevad kirjeldused tuginevad uuele metoodikale. SVI arvutuste tulemused alates aastast 2010 on saadaval [SVI veebilehel](https://eige.europa.eu/gender-equality-index/2024). SVI raport koostatakse tavapäraselt mõni aasta pärast tegelike andmete kogumist: see tähendab, et näiteks 2013\. aastal avalikustatud raport põhineb 2010\. aasta andmetel ning uusim, 2024\. aasta väljaanne põhineb 2022\. aasta andmetel.
+Eelnevalt kirjeldatud SVI loomise taust ja algne metoodika on täismahus loetav [2013. aasta SVI raportis](https://eige.europa.eu/sites/default/files/documents/Gender-Equality-Index-Report.pdf). Metoodikat [uuendati 2017. aastal](https://eige.europa.eu/publications-resources/publications/gender-equality-index-2017-methodological-report) ning järgnevad kirjeldused tuginevad uuele metoodikale. SVI arvutuste tulemused alates aastast 2010 on saadaval [SVI veebilehel](https://eige.europa.eu/gender-equality-index/2024). SVI raport koostatakse tavapäraselt mõni aasta pärast tegelike andmete kogumist: see tähendab, et näiteks 2013. aastal avalikustatud raport põhineb 2010. aasta andmetel ning uusim, 2024. aasta väljaanne põhineb 2022. aasta andmetel.
 
 SVI arvutamiseks mõõdetakse 31 näitajat kuues põhivaldkonnas ning 14 alamvaldkonnas:
 
-1) Töö:  
+1. Töö:  
    * Tööjõus osalemise määr ja prognoositud tööaastad;  
    * Tööturu killustumine, tööelu kvaliteet ja karjäärivaade;  
-2) Raha:  
+2. Raha:  
    * Sissetulek ja sissetulek pereliikme kohta;  
    * Vaesuse määr ja [S80/S20 tulusuhe](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Glossary:Income_quintile_share_ratio);  
-3) Teadmised:  
+3. Teadmised:  
    * Haridustase ning osalus formaalses ja informaalses õppes;  
-   * Erialane killustumine hariduses;  
-4) Aeg:  
+   * Erialane jaotus;  
+4. Aeg:  
    * Tasustamata hoolekanne;  
    * Vabatahtlik tegevus ja vaba aeg;  
-5) Võim:  
+5. Võim:  
    * Sooline jaotus riigiorganites;  
    * Sooline jaotus erasektori börsil noteeritud äriühingute juhatustes ning nõukogudes ja keskpanga otsustajate hulgas;  
    * Sooline jaotus avalik-õiguslikus sektoris ja olümpiakomitees;  
-6) Tervis:  
+6. Tervis:  
    * Terviseseisund, oodatav eluiga ja tervena elada jäänud aastad;  
-   * Alkoholi- ja tubakatoodete tarbimise määr ning tervislik eluviis;  
+   * Alkoholi ja tubakatoodete tarbimise määr ning tervislik eluviis;  
    * Üldarstiabi ja hambaarstiabi kättesaadavus.
 
 Lisaks kuuele põhivaldkonnale kaardistatakse ka soopõhist vägivalda liikmesriikides ning ebavõrdsust, mis sõltub faktoritest, mida ei pruugi olla võimalik muuta – sellega hinnatakse vanuse, haridustaseme, sünniriigi, peremudeli ja puuete mõju iga valdkonna ebavõrdsusele. Nende kahe näitajaga ei arvestata SVI tulemuste koostamises, aga need on terviklikuma konteksti huvides siiski olulised.
 
-Mõne indikaatori puhul otsustatakse SVI parema ühtsuse huvides muutujaid teisendada. Näiteks vaesuse piiril oleva elanikkonna osakaalu puhul võetakse osakaalu täiend ehk 20-protsendilise osakaalu puhul kasutatakse mudelis väärtust 1-20%=80%. Seevastu S80/S20 näitaja asemel otsustatakse kasutada mudelis hoopis pöördväärtust S20/S80, et kõrgem väärtus tähistaks suuremat võrdsust. Paljude näitajate puhul kasutatakse näitaja suhtarvu, st väärtust mingi elanikkonna suuruse suhtes, et arvestada ka riikide suuruse ja rahvaarvu erinevustega. Võimu valdkonnas kasutatakse arvutusteks vähemalt 18 aastaste isikute arvu ning osakaaludes arvestatakse kolme aasta keskmisega: kui andmeid esitatakse näiteks korra kvartalis, siis leitakse aasta aritmeetiline keskmine.
+Mõne indikaatori puhul otsustatakse SVI parema ühtsuse huvides muutujaid teisendada. Näiteks vaesuse piiril oleva elanikkonna osakaalu puhul võetakse osakaalu täiend ehk näiteks $11\%$ puhul kasutatakse mudelis väärtust $1-11\%=89\%$. Seevastu S80/S20 näitaja asemel otsustatakse kasutada mudelis hoopis pöördväärtust S20/S80, et kõrgem väärtus tähistaks suuremat võrdsust. Paljude näitajate puhul kasutatakse näitaja suhtarvu, st väärtust mingi elanikkonna suuruse suhtes, et arvestada ka riikide suuruse ja rahvaarvu erinevustega. Võimu valdkonnas kasutatakse arvutusteks vähemalt 18-aastaste isikute arvu ning osakaaludes arvestatakse kolme aasta keskmisega: kui andmeid esitatakse näiteks korra kvartalis, siis leitakse aasta aritmeetiline keskmine.
 
 Puuduvate väärtuste korral kasutatakse andmestikus imputeerimist, st sobivate asendusväärtustega täitmist. Metoodikas kirjeldatakse imputeerimise kasutamist neljal juhul:
 
-* Puuduolev andmepunkt, kui andmeid on kogutud vaid ühel kindlal aastal või andmed olid kättesaadavad vaid kindlal ajavahemikul: kui andmeid koguti mingis riigis aastatel 2010 ja 2015, aga soovitakse aasta 2012 väärtusi, siis 2012\. aasta väärtus imputeeritakse varasema, 2010\. aasta põhjal, et vältida ebakorrektset muutuse kajastamist.  
+* Puuduolev andmepunkt, kui andmeid on kogutud vaid ühel kindlal aastal või andmed olid kättesaadavad vaid kindlal ajavahemikul: kui andmeid koguti mingis riigis aastatel 2010 ja 2015, aga soovitakse aasta 2012 väärtusi, siis 2012. aasta väärtus imputeeritakse varasema, 2010. aasta põhjal, et vältida ebakorrektset muutuse kajastamist.  
 * Üksik puuduolev vahepealne andmepunkt: kui on olemas andmeid enne ja pärast soovitud aega, siis imputeeritakse lähima aasta väärtusega.  
 * Puuduolev EL liikmesriikide keskmise väärtuse andmepunkt: imputeeritakse liikmesriikide aritmeetiline keskminega.  
-* Puuduolev andmepunkt ühe riigi kõikide aastate kajastuses: imputeeritakse EM-algoritmi (ingl *Expectation-maximisation algorithm*) alusel. EM-algoritmi on eesti keeles ulatuslikult kirjeldanud näiteks [Sören Mirski oma 2019\. aasta matemaatilise statistika magistritöös](https://dspace.ut.ee/server/api/core/bitstreams/3279cdc9-3216-43df-a576-de9072d74bdb/content).
+* Puuduolev andmepunkt ühe riigi kõikide aastate kajastuses: imputeeritakse EM-algoritmi (ingl *Expectation-maximisation algorithm*) alusel. EM-algoritmi on eesti keeles ulatuslikult kirjeldanud näiteks [Sören Mirski oma 2019. aasta matemaatilise statistika magistritöös](https://dspace.ut.ee/server/api/core/bitstreams/3279cdc9-3216-43df-a576-de9072d74bdb/content).
 
-Iga indikaatori korral arvutatakse soopõhine erinevus valemiga ![][image1], kus jagatav on i-nda riigi t-nda aasta naiste osakaal ning jagaja on i-nda riigi t-nda aasta nii naiste kui ka meeste keskmine osakaal. Näiteks naiste tööhõivemäära 82,1% ja üldise töömäära 90% puhul oleks tulemus |82,1/90-1| \= 0,08(7). Sellest erinevusest võetakse veel omakorda varasemalt kirjeldatud ühtsuse huvides täiend 1-0,08(7)=0,91(2).
+Iga indikaatori korral arvutatakse soopõhine erinevus valemiga
+$\Upsilon_{(X_{it})}=\biggl|\frac{\tilde{X}_{it}^W}{\tilde{X}_{it}^a}-1\biggr|$
+, kus jagatav $\tilde{X}_{it}^W$ on $i$-nda riigi $t$-nda aasta naiste osakaal ning jagaja $\tilde{X}_{it}^a$ on $i$-nda riigi $t$-nda aasta nii naiste kui ka meeste keskmine osakaal. Näiteks naiste tööhõivemäära $82,1\%$ ja üldise töömäära $90\%$ puhul oleks tulemus $\left|\frac{82,1}{90}-1\right| = \frac{79}{900}\approx 0,0878$. Sellest erinevusest võetakse veel omakorda varasemalt kirjeldatud ühtsuse huvides täiend $1-\frac{79}{900}=\frac{821}{900}\approx 0,9122$.
 
-Kõiki saadud tulemusi korrutatakse veel ka korrigeerimiskoefitsiendiga, mis võetakse liikmesriikide kõige kõrgema tulemusega riigi suhtes – mida kaugemal parimast riik on, seda rohkem skoori korrigeeritakse. Korrigeerimiskoefitsient leitakse nelja esimese EIGE raporti andmete põhjal ning igal aastal veendutakse arvutusi tehes, et koefitsient püsib ajakohasena. Riigi punktitulemuse ja liikmesriikide parima riigi tulemuse jagatisest võetakse ruutjuur, saadud arv korrutatakse soovitud näitaja täiendiga, korrutatakse 99-ga ja lisatakse 1\. See tähendab, et mis tahes tulemus jääb alati lõiku \[1,100\].
+Kõiki saadud tulemusi korrutatakse veel ka korrigeerimiskoefitsiendiga, mis võetakse liikmesriikide kõige kõrgema tulemusega riigi suhtes – mida kaugemal parimast riik on, seda rohkem skoori korrigeeritakse. Korrigeerimiskoefitsient leitakse nelja esimese EIGE raporti andmete põhjal ning igal aastal veendutakse arvutusi tehes, et koefitsient püsib ajakohasena. Riigi punktitulemuse ja liikmesriikide parima riigi tulemuse jagatisest astendatakse $\frac{1}{2}$-ga, saadud arv korrutatakse soovitud näitaja täiendiga, korrutatakse $99$-ga ja lisatakse $1$. See tähendab, et mis tahes tulemus jääb alati lõiku $[1;100]$. Valemina näeb korrigeerimiskoefitsent $\alpha_{X_{it}}$ välja järgmine:
+\[\alpha_{X_{it}} = \left( \frac{ \tilde{X}_{it}^T }{ \max\left\{ \tilde{X}_{i2005}^T, \tilde{X}_{i2010}^T, \tilde{X}_{i2012}^T, \tilde{X}_{i2015}^T   \right\} } \right)^\frac{1}{2}\]
 
-Metoodika raportis tuuakse korrigeerimiskoefitsiendi näide 2015\. aasta Belgia täistööajaga tööhõive määra põhjal. Suurim täistööajaga tööhõive määr tuleb 2015\. aastast ning see on 60.9%. Belgia täistööajaga tööhõive määr uuritaval aastal (2015) oli 43.9% – jagades ja ruutjuure võttes saame 0,85. Kui teame, et Belgia soopõhine erinevus (täiendit võtmata) on 0,16, siis saame indikaatori tulemuse arvutada 1+\[0.85\*(1-0.16)\]\*99=71.6.
+Metoodika raportis tuuakse korrigeerimiskoefitsiendi näide 2015. aasta Belgia täistööajaga tööhõive määra põhjal. Suurim täistööajaga tööhõive määr tuleb 2015. aastast ning see on $60,9\%$. Belgia täistööajaga tööhõive määr uuritaval aastal (2015) oli $43,9\%$ – jagades ja $\frac{1}{2}$-ga astendades saame $0,85$. Kui teame, et Belgia soopõhine erinevus (täiendit võtmata) on $0,16$, siis saame indikaatori tulemuse arvutada $\Gamma_{X_{it}}$ arvutada järgmiselt:
+\[\Gamma_{X_{it}} = 1+[0,85\cdot(1-0,16)]\cdot99=71,6.\]
 
-Indikaatorite tulemused alamvaldkondades liidetakse kokku ning nendest võetakse aritmeetiline keskmine. Alamvaldkondade tulemustest võetakse võrdsete koefitsentidega geomeetriline keskmine ning seejärel astendatakse valdkonna skoor EIGE ekspertide koostatud väärtustega: valdkonniti on kahe komakohani ümardatud ekspertide väärtused 0,19; 0,15; 0,22; 0,15; 0,19 ning 0,10.
+Indikaatorite tulemused alamvaldkondades liidetakse kokku ning nendest võetakse aritmeetiline keskmine. Alamvaldkondade tulemustest võetakse võrdsete koefitsentidega geomeetriline keskmine ning seejärel astendatakse valdkonna skoor EIGE ekspertide koostatud väärtustega: valdkonniti on kahe komakohani ([metoodika raportis kirja pandud 15 komakohta](https://eige.europa.eu/publications-resources/publications/gender-equality-index-2017-methodological-report)) ümardatud ekspertide väärtused $0,19$ (töö); $0,15$ (raha); $0,22$ (teadmised); $0,15$ (aeg); $0,19$ (võim) ning $0,10$ (tervis).
 
-Eelnevalt kirjeldatud Belgia näites oleks lõplik skoor leitav järgnevalt:
+Eelnevalt kirjeldatud Belgia näites oleks lõplik soolise võrdsuse indeks leitav järgnevalt:
 
-![][image2]
+\[ I^{2015}_{i=BE} = (73,8^{0,19}) \cdot (87,5^{0,15}) \cdot (71,1^{0,22}) \cdot (65,3^{0,15}) \cdot (53,4^{0,19}) \cdot (86,3^{0,10}) \approx 70,5 \]
 
-Ebavõrdsete tulemuste vältimiseks veendutakse indikaatorite homogeensuses, saadud andmestikul tehakse peakomponentide analüüs ja Pearsoni korrelatsioonikordajaga ristkorrelatsioonide analüüs. Metoodika raportis mainitakse, et subjektiivsus võib tuleneda peamiselt normaliseerimisest, koefitsentide määramisest, imputeerimisest ja agregeerimisest nii alamvaldkonna kui ka põhivaldkonna tasemel. Subjektiivsuse kaotamiseks järgitakse multimodelleerimise printsiipi – iga skoori arvutatakse mitme erineva mudeli põhjal. Samuti testitakse erinevaid imputeerimise, koefitsientide määramise ja agregeerimise meetodeid.
+Ebavõrdsete tulemuste vältimiseks veendutakse indikaatorite homogeensuses, saadud andmestikul tehakse peakomponentide analüüs ja Pearsoni korrelatsioonikordajaga ristkorrelatsioonide analüüs. Metoodika raportis mainitakse, et subjektiivsus võib tuleneda peamiselt normaliseerimisest, koefitsentide määramisest, imputeerimisest ja agregeerimisest nii alamvaldkonna kui ka põhivaldkonna tasemel. Subjektiivsuse kaotamiseks järgitakse multimodelleerimise printsiipi – iga skoor arvutatakse mitme erineva mudeli põhjal. Samuti testitakse erinevaid imputeerimise, koefitsientide määramise ja agregeerimise meetodeid.
 
-Vägivalla valdkonna indeksit on arvutatud vaid 2017\. ja 2024\. aasta raportites ning [kahe raporti väärtused pole täielikult võrreldavad](https://eige.europa.eu/gender-equality-index/2024/domain/violence). Vägivallaindeks erineb põhivaldkonna indeksitest lisaks metoodikaerinevustele selle poolest, et vaadeldakse vägivalda just naiste suhtes, kuna soostereotüübid, maskuliinsus ja domineerimine on Euroopas endiselt juurdunud. Vägivallaindeksi välja töötamisel seati kolm eesmärki:
+Vägivalla valdkonna indeksit on arvutatud vaid 2017. ja 2024. aasta raportites ning [kahe raporti väärtused pole täielikult võrreldavad](https://eige.europa.eu/gender-equality-index/2024/domain/violence). Vägivallaindeks erineb põhivaldkonna indeksitest lisaks metoodikaerinevustele selle poolest, et vaadeldakse vägivalda just naiste suhtes, kuna soostereotüübid, maskuliinsus ja domineerimine on Euroopas endiselt juurdunud. Vägivallaindeksi välja töötamisel seati kolm eesmärki:
 
 1) Luua kasutajasõbralik statistiline mõõde;  
 2) Tuvastada uusi vägivalla vorme;  
@@ -82,43 +155,184 @@ Vägivallaindeksi arvutamisel vaadeldakse indikaatoritena füüsilist või seksu
 
 Sõltumatute faktorite kaupa SVI-d artiklis tähemärkide arvu vähesekski päästmiseks ei käsitleta.
 
-# 2024\. aasta raporti tulemused
+# 2024. aasta raporti tulemused
 
-2024\. aasta raport koostatakse 2022\. aastal kogutud andmete põhjal, seega “2024. aasta raporti tulemused” ja “2022. aasta skoor” viitavad samale SVI-le. Ühtluse huvides kasutatakse tekstis andmete kogumise aastaid, mitte raportite avaldamise aastaid, kui pole rangelt teisiti mainitud. Järgnev tekst on koostatud [soolise võrdõiguslikkuse indeksi veebilehe põhjal](https://eige.europa.eu/gender-equality-index/2024).
+2024\. aasta raport koostatakse 2022. aastal kogutud andmete põhjal, seega "2024. aasta raporti tulemused" ja "2022. aasta skoor" viitavad samale SVI-le. Ühtluse huvides kasutatakse tekstis andmete kogumise aastaid, mitte raportite avaldamise aastaid, kui pole rangelt teisiti mainitud. Järgnev tekst on koostatud [soolise võrdõiguslikkuse indeksi veebilehe põhjal](https://eige.europa.eu/gender-equality-index/2024).
 
-Euroopa Liidu keskmist SVI-d 71,0 ületasid 11 riiki. Kõrgeima tulemuse saavutas Rootsi 82,0 punktiga ning Eesti SVI oli eelmainitud 60,8 punkti. Lisakontekstiks on Eesti varasemad SVI-d olnud 53,4 (2010), 53,6 (2012), 56,7 (2015), 59,8 (2017), 60,7 (2018), 61,6 (2019), 61,0 (2020) ja 60,2 (2021–2022) – tõusutrend eksisteerib, kuid see näib pigem aeglane.
+Eesti SVI oli eelmainitud $60,8$ punkti. Lisakontekstiks on Eesti varasemad SVI-d olnud $53,4$ (2010), $53,6$ (2012), $56,7$ (2015), $59,8$ (2017), $60,7$ (2018), $61,6$ (2019), $61,0$ (2020) ja $60,2$ (2021–2022) – tõusutrend eksisteerib, kuid see näib pigem aeglane.
 
-SISESTA EESTI SVI TABELINA?
+```{r, fig.width=12, fig.height=8}
+eesti_valdkonniti <- read.csv('andmestik/EE-valdkonniti.csv', encoding = 'UTF-8', sep =';')
+eesti_valdkonniti_suured <- eesti_valdkonniti[eesti_valdkonniti$Sub.domain=='',]
+colnames(eesti_valdkonniti_suured) <- gsub("^X", "", colnames(eesti_valdkonniti_suured))
+colnames(eesti_valdkonniti_suured)[1] <- 'Valdkond'
+eesti_valdkonniti_suured<-  eesti_valdkonniti_suured[,-2]
 
-SISESTA EESTI SVI TRENDID
+eesti_valdkonniti_suured <- eesti_valdkonniti_suured %>%
+  mutate(Valdkond = case_when(
+    Valdkond == 'Work' ~ 'Töö',
+    Valdkond == 'Money' ~ 'Raha',
+    Valdkond == 'Knowledge' ~ 'Teadmised',
+    Valdkond == 'Time' ~ 'Aeg',
+    Valdkond == 'Power' ~ 'Võim',
+    Valdkond == 'Health' ~ 'Tervis',
+    Valdkond == 'Index' ~ 'Üldine indeks'
+  )) %>%
+  mutate(Valdkond = factor(Valdkond, levels = c(
+    'Tervis',
+    'Töö',
+    'Raha',
+    'Aeg',
+    'Üldine indeks',
+    'Teadmised',
+    'Võim'
+  )))
 
-![][image3]
+eesti_valdkonniti_pikk <- eesti_valdkonniti_suured %>%
+  pivot_longer(
+    cols = -Valdkond,           
+    names_to = "Aasta",
+    values_to = "Indeks"
+  ) %>% mutate(Aasta = as.integer(Aasta))
 
-Ainuke põhivaldkond, kus Eesti ületas EL-i keskmist, oli töö: 78,5 punktiga saavutati pingereas 7\. koht. Tulemus oli Euroopa Liidu keskmisest (74,2) 4,3 punkti kõrgem. Meeste tööturul osalemise hõivemääraks arvestati 67%, naiste määraks 55%. Samas oli täheldada suurt erinevust teadmistes, tervishoius ja sotsiaaltöös, kus töötas 28% naistest ja vaid 5% meestest. Töö valdkonna indeksikasv 12 aastaga on 7,3 indeksipunkti.
 
-Raha valdkonnas polnud Eesti olukord kiita. Põhivaldkonna indeksiks arvutati 74,0 punkti, Euroopa Liidu keskmine oli 83,4. Peamine erinevus tulenes keskmisest kuusissetulekust: meeste ja naiste vaheline palgalõhe oli üle neljasaja euro. Vaesuse piiril elavate naiste osakaal oli 27%, mis oli 5% kõrgem kui meestel. 12 aasta tagusega võrreldes on olukord paranenud – Eesti sooline palgalõhe oli [Eurostati andmetel](https://ec.europa.eu/eurostat/databrowser/view/sdg_05_20/default/table?lang=en) 2010\. aastal 27,7% ning 2022\. aastal 21,1% –, kuid Eesti [võrdse palga päev oli 2025\. aastal ikkagi alles 17\. veebruaril](https://mkm.ee/uudised/vordse-palga-paev-tahistab-soolise-palgalohe-vahenemist). 
+###trendid
 
-Teadmistes oli Euroopa Liidu keskmine 64,2 punkti, Eesti tulemus 59,8 punkti. 12 aastaga on tulemus kasvanud 12,6 indeksipunkti. 43% Eesti naistest olid keskharidusega, meestel oli keskhariduse osakaal seevastu vaid 28%. Kõige kehvem oli seis tööalase segregatsiooniga: Eesti oli viimasel kohal kõigest 39,5 punktiga, EL-i keskmine oli 54,2 punkti. See tähendab, et ainult 18% meestest olid andmete kogumise ajal pedagoogika-, tervisehoiu- või humanitaarteaduste- ja kunstivaldkonna üliõpilased, kui naistest olid seda peaaegu pooled.
 
-Aja valdkonnas oli Euroopa Liidu keskmiseks 68,5 punkti. Eesti ei jäänud siinkohal väga palju alla, saavutades 64,4-punktilise tulemuse. Igapäevaste majapidamistöödega tegelesid 51% naistest ja 39% meestest. Sooline lõhe suurenes vabatahtliku töö ja vaba aja veetmise valdkonnas, kus vabatahtlikku tööd tegid kord kuus 12% meestest ning vaid 5% naistest. Tasub täheldada, et 12 aastat tagasi oli aja valdkonna indeksiks 73,7, st Eesti tulemus on 2010\. aastast langenud 9,3 indeksipunkti.
+ggplot(eesti_valdkonniti_pikk, aes(x = Aasta, y = Indeks, color = Valdkond, group = Valdkond)) +
+  geom_line(size = 0.5) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = seq(2013, 2024, by=2)) +
+  labs(title = "Eesti soolise võrdsuse indeks valdkonniti ja aastate kaupa",
+       x = "", y = "Punktitulemus valdkonnas", color = "Valdkond",
+       subtitle = "Aastad vastavad EIGE raporti aastatele, mitte andmete kogumise aastatele",
+       caption = "Allikas: Euroopa Liidu soolise võrdõiguslikkuse instituut (EIGE), 2024.") +
+  theme_minimal()
+```
 
-SVI halvima tulemuse sai Eesti võimu valdkonnas: Euroopa Liidu keskmisest indeksist (61,8) oli Eesti indeks 29,0 võrra väiksem (32,8 punkti) ning paigutas Eesti EL-i liikmesriikide edetabelis 23\. kohale. Tulemustes oli selgelt näha, et kõrgetel kohtadel olid Eestis pigem mehed. Olukord erasektoris oli traagiline: suurettevõtete juhtivatest positsioonidest 87% kuulusid meestele ning vaid 13% naistele, EL-i keskmine meeste osakaal oli 66%. Veel hullem oli seis keskpanga juhatuses, kus naiste tulemuseks arvutati vaid 8% – keskpanga juhatuse soolises võrdõiguslikkuses maandus Eesti viimasel kohal. Poliitika alamkategoorias polnud tulemused niivõrd masendavad: Eesti saavutas 61,3-punktilise tulemuse (EL-i keskmisest \-1,3 punkti), kuna valitsuses olid viimaste aastate jooksul püsivalt olnud vähemalt kolmandikul positsioonidest naised ning Riigikogu liikmete osakaal jaotus vaadeldud perioodil naiste ja meeste vahel vastavalt 30% ja 70%. Avalik-õiguslikus sektoris jättis esmase positiivse mulje tõsiasi, et teadust rahastavate asutuste juhatustes olid 43% naised, mis kattus Euroopa Liidu keskmisega ja oli suur erinevus 12 aasta tagusest olukorrast. Seevastu olid teiste näitajate tulemused üsna nirud: rahvusringhäälingu juhatuses olid 89% mehed ning ka olümpiakomitee kõrgeimas otsustusorganis olid 84% mehed. Võrdluseks olid EL-i keskmised meeste osakaalud rahvusringhäälingus 62% ning olümpiakomitees 78%. Võimuindeks on 2010\. aastast paranenud 10,9 punkti.
 
-Tervise valdkonnas jäi Eesti EL-i keskmisele (88,6) alla vaid 2,9 punktiga. Kõige etem oli tulemus hambaravi kättesaadavuses: vaid 3 protsenti naistest ja meestest polnud soovitud hambaravi saanud. Umbes 35% üle 15-aastastest naistest kui ka meestest olid sportlikud ja toitusid tervislikult. 79% naistest ei tarbinud tubakatoodeid ega alkoholi ohtlikes kogustes, meeste puhul oli see määr 55%. Naiste keskmiseks elueaks arvutati 82 aastat, meeste elueaks 74 aastat. 12 aastaga on Eesti tulemus kasvanud 3,0 punkti.
+Ainuke põhivaldkond, kus Eesti ületas EL-i keskmist, oli töö: $78,5$ punktiga saavutati pingereas 7. koht. Tulemus oli Euroopa Liidu keskmisest $(74,2)$ $4,3$ punkti kõrgem. Meeste tööturul osalemise hõivemääraks arvestati $67\%$, naiste määraks $55\%$. Samas oli täheldada suurt erinevust teadmistes, tervishoius ja sotsiaaltöös, kus töötas $28\%$ naistest ja vaid $5\%$ meestest. Töö valdkonna indeksikasv 12 aastaga on $7,3$ indeksipunkti.
 
-Vägivalla lisavaldkonnas arvutati Euroopa keskmiseks 31,9 punkti, Eesti jäi keskmisest 2,6 punkti (29,3) madalamale. Füüsilist- ja/või seksuaalvägivalda olid Eestis kogenud 33% naistest, viimase 12 kuu füüsilise- ja/või seksuaalvägivalla määraks arvutati Eestis 2 protsenti.
+Raha valdkonnas polnud Eesti olukord kiita. Põhivaldkonna indeksiks arvutati $74,0$ punkti, Euroopa Liidu keskmine oli $83,4$. Peamine erinevus tulenes keskmisest kuusissetulekust: meeste ja naiste vaheline palgalõhe oli üle neljasaja euro. Vaesuse piiril elavate naiste osakaal oli $27\%$, mis oli $5\%$ kõrgem kui meestel. 12 aasta tagusega võrreldes on näiliselt olukord paranenud – Eesti sooline palgalõhe oli [Eurostati andmetel](https://ec.europa.eu/eurostat/databrowser/view/sdg_05_20/default/table?lang=en) 2010. aastal $27,7\%$ ning 2022. aastal $21,1\%$ –, kuid Eesti [võrdse palga päev oli 2025. aastal ikkagi alles 17. veebruaril](https://mkm.ee/uudised/vordse-palga-paev-tahistab-soolise-palgalohe-vahenemist). 
 
-SISESTA VALDKONNITI BOXPLOT
+Teadmistes oli Euroopa Liidu keskmine $64,2$ punkti, Eesti tulemus $59,8$ punkti. 12 aastaga on tulemus kasvanud $12,6$ indeksipunkti. $43\%$ Eesti naistest olid keskharidusega, meestel oli keskhariduse osakaal seevastu vaid $28\%$. Kõige kehvem oli seis tööalase segregatsiooniga: Eesti oli viimasel kohal kõigest $39,5$ punktiga, EL-i keskmine oli $54,2$ punkti. See tähendab, et ainult $18\%$ meestest olid andmete kogumise ajal pedagoogika-, tervisehoiu- või humanitaarteaduste- ja kunstivaldkonna üliõpilased, kui naistest olid seda peaaegu pooled.
+
+Aja valdkonnas oli Euroopa Liidu keskmiseks $68,5$ punkti. Eesti ei jäänud siinkohal väga palju alla, saavutades $64,4$-punktilise tulemuse. Igapäevaste majapidamistöödega tegelesid $51\%$ naistest ja $39\%$ meestest. Sooline lõhe suurenes vabatahtliku tegevuse ja vaba aja veetmise valdkonnas, kus vabatahtlikuna tegutsesid kord kuus $12\%$ meestest ning vaid $5\%$ naistest. Tasub täheldada, et 12 aastat tagasi oli aja valdkonna indeksiks $73,7$, st Eesti tulemus on 2010. aastast langenud $9,3$ indeksipunkti.
+
+SVI halvima tulemuse sai Eesti võimu valdkonnas: Euroopa Liidu keskmisest indeksist $(61,8)$ oli Eesti indeks $29,0$ võrra väiksem, $32,8$ punkti. See paigutas Eesti EL-i liikmesriikide võimu valdkonna edetabelis 23. kohale. Tulemustes oli selgelt näha, et kõrgetel kohtadel olid Eestis pigem mehed. Olukord erasektoris oli traagiline: suurettevõtete juhtivatest positsioonidest $87\%$ kuulusid meestele ning vaid $13\%$ naistele, EL-i keskmine meeste osakaal oli $66\%$. Veel hullem oli seis keskpanga juhatuses, kus naiste tulemuseks arvutati vaid $8\%$ – keskpanga juhatuse soolises võrdõiguslikkuses maandus Eesti viimasel kohal. Poliitika alamkategoorias polnud tulemused niivõrd masendavad: Eesti saavutas $61,3$-punktilise tulemuse (EL-i keskmisest $1,3$ punkti vähem), kuna valitsuses olid viimaste aastate jooksul püsivalt olnud vähemalt kolmandikul positsioonidest naised ning Riigikogu liikmete osakaal jaotus vaadeldud perioodil naiste ja meeste vahel vastavalt $30\%$ ja $70\%$. Avalik-õiguslikus sektoris jättis esmase positiivse mulje tõsiasi, et teadust rahastavate asutuste juhatustes olid $43\%$ naised, mis kattus Euroopa Liidu keskmisega ja oli suur erinevus 12 aasta tagusest olukorrast. Seevastu olid teiste näitajate tulemused üsna nirud: rahvusringhäälingu juhatuses olid $89\%$ mehed ning ka olümpiakomitee kõrgeimas otsustusorganis olid $84\%$ mehed. Võrdluseks olid EL-i keskmised meeste osakaalud rahvusringhäälingus $62\%$ ning olümpiakomitees $78\%$. Võimuindeks on 2010. aastast paranenud $10,9$ punkti.
+
+Tervise valdkonnas jäi Eesti EL-i keskmisele $(88,6)$ alla vaid $2,9$ punktiga. Kõige etem oli tulemus hambaravi kättesaadavuses: vaid $3$ protsenti naistest ja meestest polnud soovitud hambaravi saanud. Umbes $35\%$ üle 15-aastastest naistest kui ka meestest olid sportlikud ja toitusid tervislikult. $79\%$ naistest ei tarbinud tubakatoodeid ega alkoholi ohtlikes kogustes, meeste puhul oli see määr $55\%$. Naiste keskmiseks elueaks arvutati $82$ aastat, meeste elueaks $74$ aastat. 12 aastaga on Eesti tulemus kasvanud $3,0$ punkti.
+
+Vägivalla lisavaldkonnas arvutati Euroopa keskmiseks $31,9$ punkti, Eesti jäi keskmisest $2,6$ punkti $(29,3)$ madalamale. Füüsilist- ja/või seksuaalvägivalda olid Eestis kogenud $33\%$ naistest, viimase 12 kuu füüsilise- ja/või seksuaalvägivalla määraks arvutati Eestis $2$ protsenti.
+
+```{r, fig.width=12, fig.height=8}
+andmed_koik <- read.csv('andmestik/2024-EIGE-data.csv', encoding = 'UTF-8', sep =';')
+
+andmed_pikk <- andmed_koik %>%
+  pivot_longer(
+    cols = 2:ncol(andmed_koik),
+    names_to = 'Indeks',
+    values_to = 'Skoor'
+  )
+
+colnames(andmed_pikk)[1] <- 'Riik'
+
+andmed_pikk <- andmed_pikk %>%
+  mutate(lyhend = case_when(
+    Indeks == 'Overall.Gender.Equality.Index' ~ 'Soolise võrdõiguslikkuse indeks',
+    Indeks == 'Work..Domain.score.' ~ 'Töö',
+    Indeks == 'Participation.in.work..Subdomain.score.' ~ 'Tööjõus osalemise määr ja prognoositud tööaastad',
+    Indeks == 'Segregation.and.quality.of.work..Subdomain.score.' ~ 'Tööturu killustumine, tööelu kvaliteet ja karjäärivaade',
+    Indeks == 'Money..Domain.score.' ~ 'Raha',
+    Indeks == 'Financial.resources..Subdomain.score.' ~ 'Sissetulek ja sissetulek pereliikme kohta',
+    Indeks == 'Economic.situation..Subdomain.score.' ~ 'Vaesuse määr ja S80/S20 tulusuhe',
+    Indeks == 'Knowledge..Domain.score.' ~ 'Teadmised',
+    Indeks == 'Attainment.and.participation..Subdomain.score.' ~ 'Haridustase ning osalus formaalses ja informaalses õppes',
+    Indeks == 'Segregation..Subdomain.score.' ~ 'Erialane jaotus',
+    Indeks == 'Time..Domain.score.' ~ 'Aeg',
+    Indeks == 'Care.activities..Subdomain.score.' ~ 'Tasustamata hoolekanne',
+    Indeks == 'Social.activities..Subdomain.score.' ~ 'Vabatahtlik tegevus ja vaba aeg',
+    Indeks == 'Power..Domain.score.' ~ 'Võim',
+    Indeks == 'Political.power..Subdomain.score.' ~ 'Sooline jaotus riigiorganites',
+    Indeks == 'Economic.power..Subdomain.score.' ~ 'Sooline jaotus erasektoris ja keskpangas',
+    Indeks == 'Social.power..Subdomain.score.' ~ 'Sooline jaotus avalik-õiguslikus sektoris ja olümpiakomitees',
+    Indeks == 'Health..Domain.score.' ~ 'Tervis',
+    Indeks == 'Health.status..Subdomain.score.' ~ 'Terviseseisund, oodatav eluiga ja tervena elada jäänud aastad',
+    Indeks == 'Healthy.behaviour..Subdomain.score.' ~ 'Alkoholi ja tubakatoodete tarbimise määr ning tervislik eluviis',
+    Indeks == 'Access.to.health.structures..Subdomain.score.' ~ 'Üldarstiabi ja hambaarstiabi kättesaadavus',
+    TRUE ~ 'Muu'
+  )) %>%
+  mutate(lyhend = factor(lyhend, levels = c(
+    'Soolise võrdõiguslikkuse indeks',
+    'Töö',
+    'Tööjõus osalemise määr ja prognoositud tööaastad',
+    'Tööturu killustumine, tööelu kvaliteet ja karjäärivaade',
+    'Raha',
+    'Sissetulek ja sissetulek pereliikme kohta',
+    'Vaesuse määr ja S80/S20 tulusuhe',
+    'Teadmised',
+    'Haridustase ning osalus formaalses ja informaalses õppes',
+    'Erialane jaotus',
+    'Aeg',
+    'Tasustamata hoolekanne',
+    'Vabatahtlik tegevus ja vaba aeg',
+    'Võim',
+    'Sooline jaotus riigiorganites',
+    'Sooline jaotus erasektoris ja keskpangas',
+    'Sooline jaotus avalik-õiguslikus sektoris ja olümpiakomitees',
+    'Tervis',
+    'Terviseseisund, oodatav eluiga ja tervena elada jäänud aastad',
+    'Alkoholi ja tubakatoodete tarbimise määr ning tervislik eluviis',
+    'Üldarstiabi ja hambaarstiabi kättesaadavus',
+    'Muu'
+  )))
+
+andmed_pikk_ilma_suurteta <- andmed_pikk[!(andmed_pikk$lyhend %in% c('Töö', 'Võim', 'Tervis', 'Muu', 'Aeg','Raha', 'Teadmised','Soolise võrdõiguslikkuse indeks')),]
+
+# Seda miskipärast vaja, et järjekord õige oleks - Adeline
+andmed_pikk_ilma_suurteta$lyhend <- factor(andmed_pikk_ilma_suurteta$lyhend, levels = c(
+  'Üldarstiabi ja hambaarstiabi kättesaadavus',
+  'Alkoholi ja tubakatoodete tarbimise määr ning tervislik eluviis',
+  'Terviseseisund, oodatav eluiga ja tervena elada jäänud aastad',
+  'Sooline jaotus avalik-õiguslikus sektoris ja olümpiakomitees',
+  'Sooline jaotus erasektoris ja keskpangas',
+  'Sooline jaotus riigiorganites',
+  'Vabatahtlik tegevus ja vaba aeg',
+  'Tasustamata hoolekanne',
+  'Erialane jaotus',
+  'Haridustase ning osalus formaalses ja informaalses õppes',
+  'Vaesuse määr ja S80/S20 tulusuhe',
+  'Sissetulek ja sissetulek pereliikme kohta',
+  'Tööturu killustumine, tööelu kvaliteet ja karjäärivaade',
+  'Tööjõus osalemise määr ja prognoositud tööaastad'
+))
+
+ggplot(andmed_pikk_ilma_suurteta, aes(x = lyhend, y = Skoor)) +
+  geom_boxplot() +
+  geom_point(data = filter(andmed_pikk_ilma_suurteta, andmed_pikk_ilma_suurteta$Riik == "Estonia"), 
+             aes(x = lyhend, y = Skoor), 
+             size = 3, color = '#0072CE') +
+  labs(y = 'Soolise võrdsuse indeks', x = 'Alamvaldkond', title = 'EIGE 2024. aasta raporti Eesti tulemused võrreldes teiste riikidega', subtitle = "Eesti tulemus on märgitud sinise täpiga; joon karpdiagrammil tähistab mediaani", caption="Allikas: Euroopa Liidu soolise võrdõiguslikkuse instituut (EIGE), 2024.") +
+  theme_minimal() + coord_flip()
+
+```
+
 
 # Kolmandat liiki vale ehk statistilised ohukohad
 
-Suhtarvude kasutamine võib Eesti tulemusi indikaatori kaupa kallutada, sest oleme rahvaarvult üks Euroopa väiksemaid riike ning seega ühe naise või mehe lisamine või eemaldamine andmestikust on suurema kaaluga, kui näiteks Saksamaa puhul. Näiteks avalik-õiguslikus sektoris koosneb 2025\. mai seisuga Eesti Panga juhatus kolmest liikmest (sh 0 naist) ja Eesti Rahvusringhäälingu juhatus viiest liikmest (sh 1 naine), seega mis tahes muutus on väga suure kaaluga. Eesti Olümpiakomitee president on 2024\. aastast Kersti Kaljuläid – jääme pikisilmi ootama osakaalu tõusu hüpoteetilises 2026\. aasta raportis. See aga ei muuda mitte kuidagi vähem kahetsusväärsemaks kohutavat tulemust erasektori juhtivatel positsioonidel ning Eesti üleüldist madalat kohta edetabelis.
+Suhtarvude kasutamine võib Eesti tulemusi indikaatori kaupa kallutada, sest oleme rahvaarvult üks Euroopa väiksemaid riike ning seega ühe naise või mehe lisamine või eemaldamine andmestikust on suurema kaaluga, kui näiteks Saksamaa puhul. Näiteks avalik-õiguslikus sektoris koosneb 2025. mai alguse seisuga Eesti Panga juhatus kolmest liikmest (sh $0$ naist) ja Eesti Rahvusringhäälingu juhatus viiest liikmest (sh $1$ naine), seega mis tahes muutus on väga suure kaaluga. Eesti Olümpiakomitee president on 2024. aastast Kersti Kaljuläid – jääme pikisilmi ootama osakaalu tõusu hüpoteetilises 2026. aasta raportis. Valitsuses on 2025. aasta mai alguse seisuga $12$ ministrit, neist $4$ on naised. See aga ei muuda mitte kuidagi vähem kahetsusväärsemaks kohutavat tulemust erasektori juhtivatel positsioonidel ning Eesti üleüldist madalat kohta edetabelis.
 
-[Eurostati](https://ec.europa.eu/eurostat/databrowser/view/sdg_05_20/default/table?lang=en) ja [Statistikaameti](https://andmed.stat.ee/et/stat/majandus__palk-ja-toojeukulu__palk__aastastatistika/PA5335/table/tableViewLayout2) andmed palgalõhe kohta on märkimisväärselt erinevad: kui Statistikaameti tulemused on jäänud aastatel 2011–2022 vahemikku 14,9–24,8, siis Eurostati andmetel on palgalõhe samal perioodil vahemikus 21,3–29,9.
+[Eurostati](https://ec.europa.eu/eurostat/databrowser/view/sdg_05_20/default/table?lang=en) ja [Statistikaameti](https://andmed.stat.ee/et/stat/majandus__palk-ja-toojeukulu__palk__aastastatistika/PA5335/table/tableViewLayout2) andmed palgalõhe kohta on märkimisväärselt erinevad: kui Statistikaameti tulemused on jäänud aastatel 2011–2022 vahemikku $14,9–24,8$, siis Eurostati andmetel on palgalõhe samal perioodil vahemikus $21,3–29,9$.
 
-SISESTA PALGALÕHE TABEL EUROSTAT VS STATAMET
+```{r}
+palgalohe_tabel = read.csv('andmestik/palgalohe-tabel.csv', encoding = 'UTF-8', sep =',')
+colnames(palgalohe_tabel) = gsub("^X", "", colnames(palgalohe_tabel))
 
-Probleemkohtade eeskujuliku kajastamise huvides ei tasu sõnastada, et [oleme suutnud palgalõhet poole võrra vähendada](https://sm.ee/uudised/signe-riisalo-new-yorgis-sooline-vordsus-vajab-tugevat-kodanikuuhiskonda-ja-meeste) – reklaamlausena kõlab see muidugi hästi, et lahendame probleemi, kuid Eurostati ja Statistikaameti andmete põhjal oli ajavahemikus 2011–2022 palgalõhe tipp-punktis aastatel 2011–2015 ning palgalõhe brutotunnipalkade järgi on püsinud Statistikaameti andmetel alates 2011\. aastast vahemikus 1,3–1,6 eurot, tehes 2022\. aastal erandliku hüppe 2 euro peale. Palgalõhe probleemi pole lahendatud, vaid palgalõhe skaala on muutunud: probleemi parendamise asemel loodetakse näiliselt, et inflatsiooni ja hindade suurenemisega muutub erinevus igapäevaseks normaalsuseks.
+knitr::kable(palgalohe_tabel, caption="Palgalõhe (%) Statistikaameti ja Eurostati andmetel aastatel 2011–2022", format.args=list(decimal.mark = ","))
+```
+
+
+Probleemkohtade eeskujuliku kajastamise huvides ei tasu sõnastada, et [oleme suutnud palgalõhet poole võrra vähendada](https://sm.ee/uudised/signe-riisalo-new-yorgis-sooline-vordsus-vajab-tugevat-kodanikuuhiskonda-ja-meeste) – reklaamlausena kõlab see muidugi hästi, et lahendame probleemi, kuid Eurostati ja Statistikaameti andmete põhjal oli ajavahemikus 2011–2022 palgalõhe tipp-punktis aastatel 2011–2015 ning palgalõhe brutotunnipalkade järgi on püsinud Statistikaameti andmetel alates 2011. aastast vahemikus $1,3–1,6$ eurot, tehes 2022. aastal erandliku hüppe $2$ euro peale. Palgalõhe probleemi pole lahendatud, vaid palgalõhe skaala on muutunud: probleemi parendamise asemel loodetakse näiliselt, et inflatsiooni ja hindade kasvamisega muutub erinevus igapäevaseks normaalsuseks.
 
 2020\. aasta EIGE soovõrdsusindeksi [Euroopa Teadusuuringute Ühiskeskuse statistilises auditis](https://publications.jrc.ec.europa.eu/repository/handle/JRC122232) ei tuvastatud olulisi arvutuskäikudest või indikaatorivalikutest tulenevaid ebavõrdsusi indeksiväärtuste arvutamisel: leiti vaid, et üksikute riikide, nimelt Bulgaaria, Rumeenia, Austria ja Hispaania tulemused võivad olla geomeetrilise keskmise kasutamise või korrigeerimiskoefitsiendi valiku tõttu volatiilsed.
 
@@ -126,9 +340,9 @@ Probleemkohtade eeskujuliku kajastamise huvides ei tasu sõnastada, et [oleme su
 
 Soovõrdse Eestini on tee veel pikk, aga soolise võrdõiguslikkuse probleemile on esitatud lootusrikkaid lahendusi.
 
-Majandus- ja kommunikatsiooniministeeriumi avalike suhete osakonna juhataja Laura Laaster sõnas [detsembris EIGE soolise võrdsuse indeksi pressiteates](https://mkm.ee/uudised/varske-soolise-vordsuse-indeks-naiste-majanduslik-voim-eestis-teeb-vahikaiku), et soolist tasakaalu võimu valdkonnas aitab kindlasti parendada 2026\. aastal kehtima hakkav soolise tasakaalu nõue börsiettevõtete juhtkondades ja riigiettevõtetes. Niinimetatud börsidirektiiv määrab, et börsil noteeritud ettevõtete puhul peavad vähemalt 40 protsenti nõukogu liikmetest olema alaesindatud soost või vähemalt 33 protsenti juhatuse ja nõukogu liikmetest olema alaesindatud soost. [2025\. aasta veebruaris kirjutas soolise võrdõiguslikkuse ja võrdse kohtlemise volinik Christian Veske](https://www.err.ee/1609609961/christian-veske-naised-pardale-vaid-erasektoris), et esimese kooskõlastusringi järgselt otsustati mitte börsil olevat riigiettevõtted seaduse tasemel nõude alt välja jätta. 
+Majandus- ja kommunikatsiooniministeeriumi avalike suhete osakonna juhataja Laura Laaster sõnas [detsembris EIGE soolise võrdsuse indeksi pressiteates](https://mkm.ee/uudised/varske-soolise-vordsuse-indeks-naiste-majanduslik-voim-eestis-teeb-vahikaiku), et soolist tasakaalu võimu valdkonnas aitab kindlasti parendada 2026. aastal kehtima hakkav soolise tasakaalu nõue börsiettevõtete juhtkondades ja riigiettevõtetes. Niinimetatud börsidirektiiv määrab, et börsil noteeritud ettevõtete puhul peavad vähemalt $40$ protsenti nõukogu liikmetest olema alaesindatud soost või vähemalt $33$ protsenti juhatuse ja nõukogu liikmetest olema alaesindatud soost. [2025. aasta veebruaris kirjutas soolise võrdõiguslikkuse ja võrdse kohtlemise volinik Christian Veske](https://www.err.ee/1609609961/christian-veske-naised-pardale-vaid-erasektoris), et esimese kooskõlastusringi järgselt otsustati mitte börsil olevat riigiettevõtted seaduse tasemel nõude alt välja jätta. 
 
-Majandus- ja kommunikatsiooniministeeriumi pressiteates sõnastati, et Eesti eesmärk on jõuda 2035\. aastaks 70,7 indeksipunktini ning selle saavutamiseks tuleb säilitada naiste kõrget tööhõivet, vähendada soostereotüüpide mõju haridusvalikutele ja tööturule ning tähelepanu pöörata meeste tervisekäitumisele.
+Majandus- ja kommunikatsiooniministeeriumi pressiteates sõnastati, et Eesti eesmärk on jõuda 2035. aastaks $70,7$ indeksipunktini ning selle saavutamiseks tuleb säilitada naiste kõrget tööhõivet, vähendada soostereotüüpide mõju haridusvalikutele ja tööturule ning tähelepanu pöörata meeste tervisekäitumisele.
 
 2022\. aastal avaldas OECD uuringu “Soolise võrdõiguslikkuse suurendamise majanduslik kasu Eestile”, mille [eestikeelne tõlge on saadaval Sotsiaalministeeriumi lehel](https://sm.ee/sites/default/files/documents/2022-12/OECD%20rapordi%20t%C3%B5lge%20-%20soolise%20v%C3%B5rd%C3%B5iguslikkuse%20suurendamise%20majanduslik%20kasu%20Eestile.pdf). Selle kohaselt võiks soolise võrdõiguslikkusega aidata riiklikud investeeringud alusharidusse ja lastehoiusüsteemi, et vanemad saaksid naasta täistööajaga tööle pärast vanemahüvitise lõppimist või juba enne lapsehoolduspuhkuse lõppemist. Aidata võiksid ka palkade läbipaistvusmeetmed, et iga töötaja pääseks informatsioonile ligi ning saaks seda kasutada palgaläbirääkimistel. Tööandjatele võiks teha soolise palgalõhe statistika avalik esitamine kohustuslikuks. See suurendaks ka teaduslikkust töövõimalustest ja parendaks liikuvust organisatsioonide vahel. OECD uuringu sõnul on oluline, et soostereotüübid ei kanduks koolis edasi, näiteks lõimides soolise kallutatuse teemad õppematerjalidesse. Samuti mainitakse, et naiste osakaal IKT-valdkonnas, [mis on teadaolevalt Eesti peamine eksportteenus](https://stat.ee/et/avasta-statistikat/valdkonnad/majandus/valiskaubandus), on endiselt kahetsusväärselt väike ning võiks kasvada.
 
@@ -142,10 +356,4 @@ Olulise sammu soolise võrdõiguslikkuse suunas võib teha nõusolekupõhise sek
 
 [Praxis | Eelanalüüs soolise võrdõiguslikkuse ja võrdse kohtlemise temaatika lõimimiseks õpetajate baas- ja täienduskoolitusse](https://sm.ee/sites/default/files/documents/2022-06/Sool%C3%B5ime%20%C3%B5petajahariduses%20l%C3%B5pparuanne.pdf)
 
-[Statistikaamet | Võrdse kohtlemise juhtimislaud](https://juhtimislauad.stat.ee/et/vordne-kohtlemine-715) 
-
-[image1]: <data:image/png;base64,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>
-
-[image2]: <data:image/png;base64,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>
-
-[image3]: <data:image/png;base64,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>
+[Statistikaamet | Võrdse kohtlemise juhtimislaud](https://juhtimislauad.stat.ee/et/vordne-kohtlemine-715)
