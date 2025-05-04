@@ -137,3 +137,80 @@ ggplot(rootsi_ja_eesti, aes(x = lyhend, y = Skoor, fill = Riik)) +
     labels = c("Eesti", "Rootsi")
   )
 
+### Eesti
+
+#väiksed valdkonnad
+eesti_vaiksed <- andmed_pikk_ilma_suurteta[andmed_pikk_ilma_suurteta$Riik %in% c('Estonia'),]
+eesti_vaiksed$Riik <- recode(eesti_vaiksed$Riik,
+                               "Estonia" = "Eesti")
+
+ggplot(eesti_vaiksed, aes(x=lyhend,y=Skoor, fill = Riik)) + geom_col() + coord_flip() + 
+  scale_fill_manual(values = c('Eesti' = '#0072CE')) +
+  labs(y = 'Soolise võrdõiguslikkuse indeks (SVI)', x = 'Valdkonnad', fill = 'Riik',
+       title = 'Eesti SVI trendid') + theme(legend.position = 'none')
+
+
+#suured valdkonnad
+andmed_pikk_suured <- andmed_pikk[(andmed_pikk$lyhend %in% c('Töö', 'Võim', 'Tervis', 'Muu', 'Aeg','Raha', 'Teadmised','Soolise võrdõiguslikkuse indeks')),]
+eesti_suured <- andmed_pikk_suured[andmed_pikk_suured$Riik %in% c('Estonia'),]
+
+eesti_suured$Riik <- recode(eesti_suured$Riik,
+                             "Estonia" = "Eesti")
+
+ggplot(eesti_suured, aes(x=lyhend,y=Skoor, fill = Riik)) + geom_col() + coord_flip() + 
+  scale_fill_manual(values = c('Eesti' = '#0072CE')) +
+  labs(y = 'Soolise võrdõiguslikkuse indeks (SVI)', x = 'Valdkonnad', fill = 'Riik',
+       title = 'Eesti SVI trendid') + theme(legend.position = 'none')
+
+
+#modeme tabelit
+eesti_valdkonniti <- read.csv('andmestik/EE-valdkonniti.csv', encoding = 'UTF-8', sep =';')
+eesti_valdkonniti_suured <- eesti_valdkonniti[eesti_valdkonniti$Sub.domain=='',]
+colnames(eesti_valdkonniti_suured) <- gsub("^X", "", colnames(eesti_valdkonniti_suured))
+colnames(eesti_valdkonniti_suured)[1] <- 'Valdkond'
+eesti_valdkonniti_suured<-  eesti_valdkonniti_suured[,-2]
+
+eesti_valdkonniti_suured <- eesti_valdkonniti_suured %>%
+  mutate(Valdkond = case_when(
+    Valdkond == 'Work' ~ 'Töö',
+    Valdkond == 'Money' ~ 'Raha',
+    Valdkond == 'Knowledge' ~ 'Teadmised',
+    Valdkond == 'Time' ~ 'Aeg',
+    Valdkond == 'Power' ~ 'Võim',
+    Valdkond == 'Health' ~ 'Tervis',
+    Valdkond == 'Index' ~ 'SVI'
+  )) %>%
+  mutate(Valdkond = factor(Valdkond, levels = c(
+    'Töö',
+    'Raha',
+    'Teadmised',
+    'Aeg',
+    'Võim',
+    'Tervis',
+    'SVI'
+  )))
+
+
+eesti_valdkonniti_pikk <- eesti_valdkonniti_suured %>%
+  pivot_longer(
+    cols = -Valdkond,           
+    names_to = "Aasta",
+    values_to = "Indeks"
+  ) %>% mutate(Aasta = as.integer(Aasta))
+
+
+###trendid
+
+
+ggplot(eesti_valdkonniti_pikk, aes(x = Aasta, y = Indeks, color = Valdkond, group = Valdkond)) +
+  geom_line(size = 0.5) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = c(2013, 2015, 2017, 2019, 2020, 2021, 2022, 2023, 2024)) +
+  labs(title = "SVI läbi aastate (valdkonniti)",
+       x = "Aasta", y = "Indeks", color = "Valdkond") +
+  theme_minimal()
+
+
+###palgalõhed
+palgalõhe_eurostat <- read.csv('andmestik/eurostat-palgalohe.csv', encoding = 'UTF-8', sep =',')
+palgalõhe_statamet <- read.csv('andmestik/statamet-palgalohe.csv', encoding = 'UTF-8', sep =',')
