@@ -214,3 +214,56 @@ ggplot(eesti_valdkonniti_pikk, aes(x = Aasta, y = Indeks, color = Valdkond, grou
 ###palgalõhed
 palgalõhe_eurostat <- read.csv('andmestik/eurostat-palgalohe.csv', encoding = 'UTF-8', sep =',')
 palgalõhe_statamet <- read.csv('andmestik/statamet-palgalohe.csv', encoding = 'UTF-8', sep =',')
+
+
+### aneti kood
+
+data <- read.csv('andmestik/2024-EIGE-data.csv', encoding = 'UTF-8', sep =';')
+
+data <- data %>%
+  mutate(Riik_EE = recode(Geographic.region..Sub...Domain.Scores,
+                          "Austria" = "Austria",
+                          "Belgium" = "Belgia",
+                          "Bulgaria" = "Bulgaaria",
+                          "Croatia" = "Horvaatia",
+                          "Cyprus" = "Küpros",
+                          "Czechia" = "Tšehhi",
+                          "Denmark" = "Taani",
+                          "Estonia" = "Eesti",
+                          "European Union - 27 countries (from 2020)" = "Euroopa Liit",
+                          "Finland" = "Soome",
+                          "France" = "Prantsusmaa",
+                          "Germany" = "Saksamaa",
+                          "Greece" = "Kreeka",
+                          "Hungary" = "Ungari",
+                          "Ireland" = "Iirimaa",
+                          "Italy" = "Itaalia",
+                          "Latvia" = "Läti",
+                          "Lithuania" = "Leedu",
+                          "Luxembourg" = "Luksemburg",
+                          "Malta" = "Malta",
+                          "Netherlands" = "Holland",
+                          "Poland" = "Poola",
+                          "Portugal" = "Portugal",
+                          "Romania" = "Rumeenia",
+                          "Slovakia" = "Slovakkia",
+                          "Slovenia" = "Sloveenia",
+                          "Spain" = "Hispaania",
+                          "Sweden" = "Rootsi"
+  ))
+
+data <- data %>%
+  mutate(Varvikood = case_when(
+    Riik_EE == "Eesti" ~ "EE",
+    Riik_EE == "Euroopa Liit" ~ "EU",
+    TRUE ~ "Muu"
+  ))
+
+
+ggplot(data, aes(x = reorder(Riik_EE, Overall.Gender.Equality.Index), y = Overall.Gender.Equality.Index, 
+                 fill = Varvikood)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("EE" = "#0072CE", "EU" = "#F2B800", "Muu" = "lightblue"), guide = "none") +
+  labs(x = "Riik",
+       y = "Soolise võrdõiguslikkuse indeks") +
+  coord_flip()
