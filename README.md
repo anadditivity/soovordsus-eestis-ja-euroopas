@@ -18,5 +18,5 @@ Koodihoidla koosneb järgnevatest failidest:
 * `andmestik/palgalohe-tabel.csv` - Statistikaameti ja Eurostati andmetel loodud kombineeritud palgalõhe fail. Andmed [Statistikaameti tabelist PA5335](https://andmed.stat.ee/et/stat/majandus__palk-ja-toojeukulu__palk__aastastatistika/PA5335) ja [Eurostat andmetabelist sdg_05_20](https://ec.europa.eu/eurostat/databrowser/view/sdg_05_20/default/table?lang=en).
 * `artikkel.html` - faili `artikkel.Rmd` väljund; loetav artikkel.
 * `artikkel.Rmd` - R Markdown formaadis artiklifail. Sisaldab teksti ning graafikute koodi.
-* `LICENCE` - MIT litsents.
+* `LICENCE` - GNU GPL 3. versioon.
 * `README.md` - fail, mida praegu loed.
